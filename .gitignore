@@ -1,0 +1,23 @@
+# Sublime Text Mavens Mate Project Files Ignore
+apex-scripts/
+config/
+deploy/
+backup/
+debug/
+unpackaged/
+*.sublime-project
+*.sublime-settings
+*.sublime-workspace
+
+###
+### Not Ignored for now
+###
+# Eclipse Force.com IDE files ignore
+#.project
+#.setting/
+#salesforce.schema
+
+#
+private*.properties
+
+.gradle/
