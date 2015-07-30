@@ -69,11 +69,15 @@ public with sharing class Paginator {
 	}
 
 	public Integer getEndIndexOnPage() {
-		if (onlyIds == null || onlyIds.size() == 0) {
-			return 0;
-		}
-
 		return Math.min(getRecordsPerPage() * getActivePage(), getAllRecordsNumber());
+	}
+
+	private String getObjectName() {
+		return objectType.getDescribe().getName();
+	}
+
+	public String getFields() {
+		return ' Id, Name ';
 	}
 
 	public Boolean nextPage() {
@@ -106,12 +110,24 @@ public with sharing class Paginator {
 	}
 
 	public SObject[] getPageData() {
-		return null;
+		Integer startIndex = getStartIndexOnPage();
+		Integer endIndex = getEndIndexOnPage();
+
+		String[] ids = new String[] {};
+
+		for (Integer index = startIndex; index <= endIndex; index++) {
+			ids.add(onlyIds[index].Id);
+		}
+
+		String query = 'SELECT ' + getFields() + ' FROM ' + getObjectName() + ' LIMIT ' + maxRecordsNumber;
+
+		recordsOnPage = Database.query(query);
+
+		return recordsOnPage;
 	}
 
-	private void updateRecords() {
-		String objectName = objectType.getDescribe().getName();
-		String query = 'SELECT Id FROM ' + objectName + ' LIMIT ' + maxRecordsNumber;
+	private void updateRecords() {		
+		String query = 'SELECT Id FROM ' + getObjectName() + ' LIMIT ' + maxRecordsNumber;
 
 		onlyIds = Database.query(query);
 	}
