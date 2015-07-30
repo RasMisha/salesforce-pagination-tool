@@ -7,50 +7,71 @@ public with sharing class Paginator {
 	public static final Integer DEFAULT_RECORDS_PER_PAGE = 25;
 	public static final Integer DEFAULT_ACTIVE_PAGE = 1;
 
+	private static final Integer DEFAULT_FIRST_RECORD_INDEX = 1;
+
 	public static final Integer DOTS_IN_PAGINATION = -1;
 
-	private SObjectType objectType {get;set;}
-	private Integer maxRecordsNumber {get;set;}
-	public Integer recordsPerPage {
-		get;
-		set {
-			recordsPerPage = value;
-
-			Integer recordsNumber = onlyIds == null ? 0 : onlyIds.size();
-			updateActivePageBasedOnStartRecordOnPage(recordsNumber, startIndexOnPage, value);
-		}
-	}
-
-	private Integer activePage {get; set;}
-	private Integer pagesNumber {get;set;}
-	private Integer startIndexOnPage {get;set;}
-	private Integer lastIndexOnPage {get;set;}
+	private SObjectType objectType;
+	private Integer maxRecordsNumber;
+	public Integer recordsPerPage;
+	private Integer activePage;
+	private Integer pagesNumber;
 
 	private SObject[] onlyIds;
 	private SObject[] recordsOnPage;
 
 	public Paginator(SObjectType objectTypeForPagination) {
 		objectType = objectTypeForPagination;
+		updateRecords();
 		initDefaults();
 	}
 
 	private void initDefaults() {
-		maxRecordsNumber = DEFAULT_MAXIMUM_RECORDS_NUMBER;
-		recordsPerPage = DEFAULT_RECORDS_PER_PAGE;
+		maxRecordsNumber = DEFAULT_MAXIMUM_RECORDS_NUMBER;		
 		activePage = DEFAULT_ACTIVE_PAGE;
+		recordsPerPage = DEFAULT_RECORDS_PER_PAGE;
 	}
 
 	public void setMaximumRecordsNumber(Integer newMaxRecordsNumber) {
 		maxRecordsNumber = newMaxRecordsNumber;
 	}
 
-	public void setActivePage(Integer value) {
-		activePage = value;
-		updateStartAndLastIndexOnPage();
-	}
-
 	public Integer getActivePage() {
 		return activePage;
+	}
+
+	private void setActivePage(Integer value) {
+		activePage = value;
+	}
+
+	public Integer getRecordsPerPage() {
+		return recordsPerPage;
+	}
+
+	public void setRecordsPerPage(Integer newRecordsPerPage) {
+		oldStartIndex = getStartIndexOnPage();
+		recordsPerPage = newRecordsPerPage;
+	
+		updateActivePageBasedOnStartRecordOnPage(
+			getAllRecordsNumber(), 
+			oldStartIndex, 
+			newRecordsPerPage
+		);
+	}
+
+	public Integer getAllRecordsNumber() {
+		return onlyIds.size();
+	}
+
+	public Integer getStartIndexOnPage() {
+		if (onlyIds == null) {
+			return 0;
+		}
+
+		return Math.max(
+			0, 
+			getRecordsPerPage() * (getActivePage() - 1) + 1
+		);
 	}
 
 	public Boolean nextPage() {
@@ -78,17 +99,19 @@ public with sharing class Paginator {
 	}
 
 	public void reloadRecords() {
-
-		String objectName = objectType.getDescribe().getName();
-		String query = 'SELECT Id FROM ' + objectName + ' LIMIT ' + maxRecordsNumber;		
-
-		onlyIds = Database.query(query);
-
+		updateRecords();
 		updatePagesNumber();
 	}
 
 	public SObject[] getPageData() {
 		return null;
+	}
+
+	private void updateRecords() {
+		String objectName = objectType.getDescribe().getName();
+		String query = 'SELECT Id FROM ' + objectName + ' LIMIT ' + maxRecordsNumber;
+
+		onlyIds = Database.query(query);
 	}
 
 	private void updatePagesNumber() {
@@ -104,18 +127,8 @@ public with sharing class Paginator {
 	}
 
 	private void updateActivePageBasedOnStartRecordOnPage(Integer recordsNumber, Integer startIndexOnPage, Integer newRecordsPerPage) {
-		Integer subtractCoef = recordsNumber > 0 ? 1 : 0;
-		activePage = (startIndexOnPage - subtractCoef) / recordsPerPage + 1;
-	}
-
-	private void updateStartAndLastIndexOnPage() {
-		if (onlyIds == null || onlyIds.size() == 0) {
-			startIndexOnPage = 0;
-			lastIndexOnPage = 0;
-		} else {
-			startIndexOnPage = recordsPerPage * (activePage - 1) + 1;
-			lastIndexOnPage = Math.min(onlyIds.size(), startIndexOnPage + recordsPerPage - 1);
-		}
+		Integer subtractCoef = getAllRecordsNumber() > 0 ? 1 : 0;
+		setActivePage((startIndexOnPage - subtractCoef) / recordsPerPage + 1);
 	}
 
 	public Integer[] getPaginationValues() {
