@@ -12,10 +12,10 @@ public with sharing class Paginator {
 	private SObjectType objectType;
 	private Integer maxRecordsNumber;
 	@testVisible
-	public Integer recordsPerPage;
+	private Integer recordsPerPage;
 	private Integer activePage;
 	private Integer pagesNumber;
-	private String fields;
+	private String[] fields;
 
 	private SObject[] onlyIds;
 	private SObject[] recordsOnPage;
@@ -33,15 +33,10 @@ public with sharing class Paginator {
 	}
 
 	private void initFields() {
-		Set<String> fieldsApiNames = objectType.getDescribe().fields.getMap().keySet();
-		Integer index = 0;
-		fields = ' ';
-		for (String fieldApiName : fieldsApiNames) {
-			if (index > 0) {
-				fields += ', ';
-			}
-			fields += fieldApiName + ' ';
-			index++;
+		Set<String> fieldsApiNames = objectType.getDescribe().fields.getMap().keySet();	
+		fields = new String[] {};
+		for (String fieldApiName : fieldsApiNames) {		
+			fields.add(fieldApiName);
 		}
 	}
 
@@ -98,12 +93,12 @@ public with sharing class Paginator {
 		return objectType.getDescribe().getName();
 	}
 
-	public String getFields() {
+	public String[] getFields() {
 		return fields;
 	}
 
-	public void setFields(String fieldsValue) {
-		fields = ' ' + fieldsValue + ' ';
+	public void setFields(String[] newfields) {
+		fields = newfields;
 	}
 
 	public Boolean nextPage() {
@@ -163,23 +158,27 @@ public with sharing class Paginator {
 		}
 
 		String[] ids = new String[] {};
-		String idsString = '';
-
+		
 		String currentId;
 		for (Integer index = startIndex; index <= endIndex; index++) {
 			currentId = onlyIds[index - 1].Id;
 			ids.add(currentId);
-
-			if (index > startIndex) {
-				idsString += ', ';
-			}
-			idsString += '\'' + currentId + '\'';
 		}
 
+		String idsString = PaginatorUtils.join(
+			ids, 
+			PaginatorUtils.COMMA_SEPARATOR, 
+			true
+		);
 
+		String fieldString = PaginatorUtils.join(
+			getFields(), 
+			PaginatorUtils.COMMA_SEPARATOR, 
+			false
+		);
 
 		String query = 
-			'SELECT ' + getFields() 
+			'SELECT ' + fieldString
 			+ ' FROM ' + getObjectName() 
 			+ ' WHERE Id in (' + idsString +')'
 			+ ' LIMIT ' + maxRecordsNumber;

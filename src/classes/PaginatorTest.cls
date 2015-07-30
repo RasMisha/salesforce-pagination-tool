@@ -259,7 +259,7 @@ private class PaginatorTest {
 	@isTest(seeAllData = false)
 	static void testPageDataWithPredefinedFields() {
 		Paginator testPaginator = new Paginator(Account.SObjectType);
-		testPaginator.setFields('Id,OwnerId');
+		testPaginator.setFields(new String[] {'Id','OwnerId'});
 		testPaginator.reloadRecords();
 
 		Test.startTest();
