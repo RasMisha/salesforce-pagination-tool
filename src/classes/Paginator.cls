@@ -7,8 +7,6 @@ public with sharing class Paginator {
 	public static final Integer DEFAULT_RECORDS_PER_PAGE = 25;
 	public static final Integer DEFAULT_ACTIVE_PAGE = 1;
 
-	private static final Integer DEFAULT_FIRST_RECORD_INDEX = 1;
-
 	public static final Integer DOTS_IN_PAGINATION = -1;
 
 	private SObjectType objectType;
@@ -22,7 +20,6 @@ public with sharing class Paginator {
 
 	public Paginator(SObjectType objectTypeForPagination) {
 		objectType = objectTypeForPagination;
-		updateRecords();
 		initDefaults();
 	}
 
@@ -49,7 +46,7 @@ public with sharing class Paginator {
 	}
 
 	public void setRecordsPerPage(Integer newRecordsPerPage) {
-		oldStartIndex = getStartIndexOnPage();
+		Integer oldStartIndex = getStartIndexOnPage();
 		recordsPerPage = newRecordsPerPage;
 	
 		updateActivePageBasedOnStartRecordOnPage(
@@ -64,14 +61,19 @@ public with sharing class Paginator {
 	}
 
 	public Integer getStartIndexOnPage() {
-		if (onlyIds == null) {
+		if (onlyIds == null || onlyIds.size() == 0) {
 			return 0;
 		}
 
-		return Math.max(
-			0, 
-			getRecordsPerPage() * (getActivePage() - 1) + 1
-		);
+		return getRecordsPerPage() * (getActivePage() - 1) + 1;
+	}
+
+	public Integer getEndIndexOnPage() {
+		if (onlyIds == null || onlyIds.size() == 0) {
+			return 0;
+		}
+
+		return Math.min(getRecordsPerPage() * getActivePage(), getAllRecordsNumber());
 	}
 
 	public Boolean nextPage() {
