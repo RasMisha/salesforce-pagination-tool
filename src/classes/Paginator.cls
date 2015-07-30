@@ -14,6 +14,7 @@ public with sharing class Paginator {
 	public Integer recordsPerPage;
 	private Integer activePage;
 	private Integer pagesNumber;
+	private String fields;
 
 	private SObject[] onlyIds;
 	private SObject[] recordsOnPage;
@@ -21,12 +22,25 @@ public with sharing class Paginator {
 	public Paginator(SObjectType objectTypeForPagination) {
 		objectType = objectTypeForPagination;
 		initDefaults();
-	}
+		initFields();
+	}	
 
 	private void initDefaults() {
 		maxRecordsNumber = DEFAULT_MAXIMUM_RECORDS_NUMBER;		
 		activePage = DEFAULT_ACTIVE_PAGE;
 		recordsPerPage = DEFAULT_RECORDS_PER_PAGE;
+	}
+
+	private void initFields() {
+		Set<String> fieldsApiNames = objectType.getDescribe().fields.getMap().keySet();
+		Integer index = 0;
+		fields = ' ';
+		for (String fieldApiName : fieldsApiNames) {
+			if (index > 0) {
+				fields += ', ';
+			}
+			fields += fieldApiName + ' ';
+		}
 	}
 
 	public void setMaximumRecordsNumber(Integer newMaxRecordsNumber) {
@@ -77,7 +91,7 @@ public with sharing class Paginator {
 	}
 
 	public String getFields() {
-		return ' Id, Name ';
+		return fields;
 	}
 
 	public Boolean nextPage() {
