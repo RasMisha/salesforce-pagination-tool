@@ -293,10 +293,10 @@ private class PaginatorTest {
 		testPaginator.reloadRecords();
 
 		Test.startTest();
-		Opportunity[] accounts = (Opportunity[]) testPaginator.getPageData();
+		Opportunity[] opportunities = (Opportunity[]) testPaginator.getPageData();
 		Test.stopTest();
 
-		System.assertEquals(0, accounts.size());
+		System.assertEquals(0, opportunities.size());
 	}
 
 	@isTest(seeAllData = false)
@@ -313,5 +313,28 @@ private class PaginatorTest {
 
 		System.assertEquals(1, testPaginator.getActivePage());
 		System.assertEquals(0, testPaginator.getAllRecordsNumber());
+	}
+
+	@isTest(seeAllData = false)
+	static void testSortsAndReverse() {
+		Paginator testPaginator = new Paginator(Account.SObjectType);
+		testPaginator.addSortItem(new PaginatorSortItem('Name'));
+		testPaginator.reloadRecords();
+		
+		Test.startTest();
+	 	String lastIdOnFirstSort = testPaginator.onlyIds[testPaginator.onlyIds.size() - 1].Id;
+		PaginatorSortItem sortItem = testPaginator.getSortItemAt(0);
+		sortItem.reverseSortType();
+		String firstIdOnReverseSort = testPaginator.onlyIds[0].Id;
+		testPaginator.removeSortItem(0);
+		Integer numberOfSortItemsAfterFirstDelete = testPaginator.sortItemsSize();
+		testPaginator.removeSortItem(0);
+		Integer numberOfSortItemsAfterSecondDelete = testPaginator.sortItemsSize();
+		Test.stopTest();
+
+		System.assertEquals(lastIdOnFirstSort, firstIdOnReverseSort);
+		System.assertEquals(null, testPaginator.getSortItemAt(-1));
+		System.assertEquals(0, numberOfSortItemsAfterFirstDelete);
+		System.assertEquals(0, numberOfSortItemsAfterSecondDelete);
 	}
 }

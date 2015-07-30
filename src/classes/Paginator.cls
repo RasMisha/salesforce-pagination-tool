@@ -1,7 +1,7 @@
 /**
  * Created by RasMisha on 07/29/2015
  */
-public with sharing class Paginator {
+public with sharing class Paginator implements PaginatorSortItemListener {
 
 	public static final Integer DEFAULT_MAXIMUM_RECORDS_NUMBER = 10000;
 	public static final Integer DEFAULT_RECORDS_PER_PAGE = 25;
@@ -13,8 +13,12 @@ public with sharing class Paginator {
 	private Integer recordsPerPage;
 	private Integer activePage;
 	private Integer pagesNumber;
-	private String[] fields;
 
+	private String[] fields;
+	private String filterCondition;
+	private PaginatorSortItem[] sortItems;
+
+	@testVisible
 	private SObject[] onlyIds;
 	private SObject[] recordsOnPage;
 
@@ -28,6 +32,7 @@ public with sharing class Paginator {
 		maxRecordsNumber = DEFAULT_MAXIMUM_RECORDS_NUMBER;		
 		activePage = DEFAULT_ACTIVE_PAGE;
 		recordsPerPage = DEFAULT_RECORDS_PER_PAGE;
+		sortItems = new PaginatorSortItem[] {};
 	}
 
 	private void initFields() {
@@ -99,6 +104,34 @@ public with sharing class Paginator {
 		fields = newfields;
 	}
 
+	public void setFilterCondition(String condition) {
+		filterCondition = condition;
+	}
+
+	public void addSortItem(PaginatorSortItem sortItem) {
+		sortItems.add(sortItem);
+		sortItem.setListener(this);
+	}
+
+	public void removeSortItem(Integer index) {
+		if (index < sortItems.size() && index >= 0) {
+			PaginatorSortItem itemToRemove = sortItems.get(index);
+			itemToRemove.removeListener();
+			sortItems.remove(index);
+		}
+	}
+
+	public Integer sortItemsSize() {
+		return sortItems.size();
+	}
+
+	public PaginatorSortItem getSortItemAt(Integer index) {
+		if (index >= sortItems.size() || index < 0) {
+			return null;
+		}
+		return sortItems.get(index);
+	}
+
 	public Boolean nextPage() {
 		if (activePage < getPagesNumber()) {
 			setActivePage(activePage + 1);
@@ -140,7 +173,12 @@ public with sharing class Paginator {
 	}
 
 	private void updateRecords() {		
-		String query = 'SELECT Id FROM ' + getObjectName() + ' LIMIT ' + maxRecordsNumber;
+		String query = 
+			'SELECT Id ' 
+			+ ' FROM ' + getObjectName() 
+			+ (String.isNotBlank(filterCondition) ? ' WHERE ' + filterCondition : '')
+			+ (sortItems.size() > 0 ? ' ORDER BY ' + PaginatorUtils.join(sortItems, PaginatorUtils.COMMA_SEPARATOR, false) : '')
+			+ ' LIMIT ' + maxRecordsNumber;
 
 		onlyIds = Database.query(query);
 	}
@@ -208,6 +246,10 @@ public with sharing class Paginator {
 
 	public Integer[] getPaginationValues() {
 		return PaginatorUtils.getPaginationValues(pagesNumber, activePage);
+	}
+
+	public void sortDirectionWasChanged() {
+		reloadRecords();
 	}
 
 }

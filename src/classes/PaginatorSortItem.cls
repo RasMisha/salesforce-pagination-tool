@@ -3,13 +3,15 @@
  */
 public with sharing class PaginatorSortItem {
 
-	private static String ILLEGAL_SORT_TYPE_MESSAGE = 'Sort Type must be have one of two values: PaginatorSortItem.SORT_TYPE_ASC or PaginatorSortItem.SORT_TYPE_DESC';
+	private static String ILLEGAL_SORT_TYPE_MESSAGE = 'Sort Type must have one of two values: PaginatorSortItem.SORT_TYPE_ASC or PaginatorSortItem.SORT_TYPE_DESC';
 
 	public static Integer SORT_TYPE_ASC = 0;
 	public static Integer SORT_TYPE_DESC = 1;
 
 	public String field {get; private set;}
 	public Integer sortType {get; private set;}
+
+	private PaginatorSortItemListener listener;
 
 	public PaginatorSortItem(String field) {
 		this(field, SORT_TYPE_ASC);
@@ -39,6 +41,18 @@ public with sharing class PaginatorSortItem {
 		} else {
 			sortType = SORT_TYPE_ASC;
 		}
+
+		if (listener != null) {
+			listener.sortDirectionWasChanged();
+		}
+	}
+
+	public void setListener(PaginatorSortItemListener listener) {
+		this.listener = listener;
+	}
+
+	public void removeListener() {
+		this.listener = null;
 	}
 
 }
