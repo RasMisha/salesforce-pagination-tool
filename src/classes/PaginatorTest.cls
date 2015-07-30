@@ -297,5 +297,21 @@ private class PaginatorTest {
 		Test.stopTest();
 
 		System.assertEquals(0, accounts.size());
-	} 
+	}
+
+	@isTest(seeAllData = false)
+	static void testReloadAfterDelete() {
+		Paginator testPaginator = new Paginator(Account.SObjectType);
+		testPaginator.reloadRecords();
+		testPaginator.lastPage();
+		Account[] accounts = [SELECT Id FROM Account];
+		
+		Test.startTest();		
+		Database.delete(accounts);
+		testPaginator.reloadRecords();
+		Test.stopTest();
+
+		System.assertEquals(1, testPaginator.getActivePage());
+		System.assertEquals(0, testPaginator.getAllRecordsNumber());
+	}
 }
