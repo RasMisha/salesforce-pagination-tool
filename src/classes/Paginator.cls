@@ -40,6 +40,7 @@ public with sharing class Paginator {
 				fields += ', ';
 			}
 			fields += fieldApiName + ' ';
+			index++;
 		}
 	}
 
@@ -72,6 +73,10 @@ public with sharing class Paginator {
 
 	public Integer getAllRecordsNumber() {
 		return onlyIds.size();
+	}
+
+	public Integer getPagesNumber() {
+		return pagesNumber;
 	}
 
 	public Integer getStartIndexOnPage() {
