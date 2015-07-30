@@ -153,7 +153,7 @@ private class PaginatorTest {
 
 		Test.startTest();
 		testPaginator.setRecordsPerPage(50);
-		Test.startTest();
+		Test.stopTest();
 
 		System.assertEquals(5, testPaginator.getPagesNumber());
 		System.assertEquals(1, testPaginator.getStartIndexOnPage());

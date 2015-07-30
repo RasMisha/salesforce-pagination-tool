@@ -54,6 +54,7 @@ public with sharing class Paginator {
 
 	private void setActivePage(Integer value) {
 		activePage = value;
+		updateRecordsOnPage();
 	}
 
 	public Integer getRecordsPerPage() {
@@ -135,19 +136,6 @@ public with sharing class Paginator {
 	}
 
 	public SObject[] getPageData() {
-		Integer startIndex = getStartIndexOnPage();
-		Integer endIndex = getEndIndexOnPage();
-
-		String[] ids = new String[] {};
-
-		for (Integer index = startIndex; index <= endIndex; index++) {
-			ids.add(onlyIds[index].Id);
-		}
-
-		String query = 'SELECT ' + getFields() + ' FROM ' + getObjectName() + ' LIMIT ' + maxRecordsNumber;
-
-		recordsOnPage = Database.query(query);
-
 		return recordsOnPage;
 	}
 
@@ -155,6 +143,21 @@ public with sharing class Paginator {
 		String query = 'SELECT Id FROM ' + getObjectName() + ' LIMIT ' + maxRecordsNumber;
 
 		onlyIds = Database.query(query);
+	}
+
+	private void updateRecordsOnPage() {
+		Integer startIndex = getStartIndexOnPage();
+		Integer endIndex = getEndIndexOnPage();
+
+		String[] ids = new String[] {};
+
+		for (Integer index = startIndex; index <= endIndex; index++) {
+			ids.add(onlyIds[index - 1].Id);
+		}
+
+		String query = 'SELECT ' + getFields() + ' FROM ' + getObjectName() + ' LIMIT ' + maxRecordsNumber;
+
+		recordsOnPage = Database.query(query);
 	}
 
 	private void updatePagesNumber() {
