@@ -7,8 +7,6 @@ public with sharing class Paginator {
 	public static final Integer DEFAULT_RECORDS_PER_PAGE = 25;
 	public static final Integer DEFAULT_ACTIVE_PAGE = 1;
 
-	public static final Integer DOTS_IN_PAGINATION = -1;
-
 	private SObjectType objectType;
 	private Integer maxRecordsNumber;
 	@testVisible
@@ -209,43 +207,7 @@ public with sharing class Paginator {
 	}
 
 	public Integer[] getPaginationValues() {
-		Integer[] values = new Integer[] {};
-		if (pagesNumber <= 6) {
-			for (Integer value = 1; value <= pagesNumber; value++) {
-				values.add(value);
-			}
-		} else {
-			
-			if (activePage > 3) {
-				values.add(1);
-				values.add(DOTS_IN_PAGINATION);
-				if (activePage == pagesNumber) {
-					values.add(activePage - 2);
-				}
-				values.add(activePage - 1);
-				values.add(activePage);
-			} else {
-
-				for (Integer value = 1; value <= activePage; value++) {
-					values.add(value);
-				}
-			}
-
-			if (activePage < pagesNumber - 3) {
-				values.add(activePage+1);
-				if (activePage == 1) {
-					values.add(activePage+2);
-				}
-				values.add(DOTS_IN_PAGINATION);
-				values.add(pagesNumber);
-			} else {
-				for (Integer value = activePage + 1; value <= pagesNumber; value++) {
-					values.add(value);
-				}	
-			}
-
-		}
-		return values;
+		return PaginatorUtils.getPaginationValues(pagesNumber, activePage);
 	}
 
 }

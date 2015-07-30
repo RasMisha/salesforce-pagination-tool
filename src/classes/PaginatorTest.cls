@@ -46,7 +46,7 @@ private class PaginatorTest {
 		System.assertEquals(2, testPaginator.getActivePage());
 
 		Integer[] actualPaginationValues = testPaginator.getPaginationValues();
-		Integer[] expectedArray = new Integer[] {1,2,3, Paginator.DOTS_IN_PAGINATION, 9};
+		Integer[] expectedArray = new Integer[] {1,2,3, PaginatorUtils.DOTS_IN_PAGINATION, 9};
 
 		System.assertEquals(actualPaginationValues.size(), expectedArray.size());
 		for (Integer index = 0; index < actualPaginationValues.size(); index++) {
@@ -68,7 +68,7 @@ private class PaginatorTest {
 		System.assertEquals(9, testPaginator.getActivePage());
 
 		Integer[] actualPaginationValues = testPaginator.getPaginationValues();
-		Integer[] expectedArray = new Integer[] {1, Paginator.DOTS_IN_PAGINATION, 7, 8, 9};
+		Integer[] expectedArray = new Integer[] {1, PaginatorUtils.DOTS_IN_PAGINATION, 7, 8, 9};
 
 		System.assertEquals(actualPaginationValues.size(), expectedArray.size());
 		for (Integer index = 0; index < actualPaginationValues.size(); index++) {
@@ -91,7 +91,7 @@ private class PaginatorTest {
 		System.assertEquals(1, testPaginator.getActivePage());
 
 		Integer[] actualPaginationValues = testPaginator.getPaginationValues();
-		Integer[] expectedArray = new Integer[] {1,2,3, Paginator.DOTS_IN_PAGINATION, 9};
+		Integer[] expectedArray = new Integer[] {1,2,3, PaginatorUtils.DOTS_IN_PAGINATION, 9};
 
 		System.assertEquals(actualPaginationValues.size(), expectedArray.size());
 		for (Integer index = 0; index < actualPaginationValues.size(); index++) {
@@ -116,7 +116,7 @@ private class PaginatorTest {
 
 
 		Integer[] actualPaginationValues = testPaginator.getPaginationValues();
-		Integer[] expectedArray = new Integer[] {1, Paginator.DOTS_IN_PAGINATION, 7, 8, 9};
+		Integer[] expectedArray = new Integer[] {1, PaginatorUtils.DOTS_IN_PAGINATION, 7, 8, 9};
 
 		System.assertEquals(actualPaginationValues.size(), expectedArray.size());
 		for (Integer index = 0; index < actualPaginationValues.size(); index++) {
@@ -139,7 +139,7 @@ private class PaginatorTest {
 
 
 		Integer[] actualPaginationValues = testPaginator.getPaginationValues();
-		Integer[] expectedArray = new Integer[] {1, Paginator.DOTS_IN_PAGINATION, 4, 5, 6, Paginator.DOTS_IN_PAGINATION, 9};
+		Integer[] expectedArray = new Integer[] {1, PaginatorUtils.DOTS_IN_PAGINATION, 4, 5, 6, PaginatorUtils.DOTS_IN_PAGINATION, 9};
 
 		System.assertEquals(actualPaginationValues.size(), expectedArray.size());
 		for (Integer index = 0; index < actualPaginationValues.size(); index++) {
@@ -211,7 +211,7 @@ private class PaginatorTest {
 		System.assertEquals(2, testPaginator.getActivePage());
 
 		Integer[] actualPaginationValues = testPaginator.getPaginationValues();
-		Integer[] expectedArray = new Integer[] {1, 2, 3, Paginator.DOTS_IN_PAGINATION, 7};
+		Integer[] expectedArray = new Integer[] {1, 2, 3, PaginatorUtils.DOTS_IN_PAGINATION, 7};
 
 		System.assertEquals(actualPaginationValues.size(), expectedArray.size());		
 		for (Integer index = 0; index < actualPaginationValues.size(); index++) {
