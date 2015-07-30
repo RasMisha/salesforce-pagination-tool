@@ -12,7 +12,7 @@ public with sharing class PaginatorSortItem {
 	public String field {get; private set;}
 	public Integer sortType {get; private set;}
 
-	private PaginatorSortItemListener listener;
+	private PaginatorSortItemListener listener = null;
 
 	public PaginatorSortItem(String field) {
 		this(field, SORT_TYPE_ASC);
@@ -48,16 +48,16 @@ public with sharing class PaginatorSortItem {
 		}
 	}
 
-	public void setListener(PaginatorSortItemListener listener) {
+	public void setListener(PaginatorSortItemListener newListener) {
 		if (listener == null) {
-			this.listener = listener;
+			listener = newListener;
 		} else {
 			throw new PaginatorException(SORT_ITEM_ALREADY_IN_USED);
 		}
 	}
 
 	public void removeListener() {
-		this.listener = null;
+		listener = null;
 	}
 
 }
