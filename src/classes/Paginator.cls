@@ -100,7 +100,7 @@ public with sharing class Paginator {
 	}
 
 	public Boolean nextPage() {
-		if (activePage < pagesNumber) {
+		if (activePage < getPagesNumber()) {
 			setActivePage(activePage + 1);
 			return true;
 		}
@@ -115,12 +115,18 @@ public with sharing class Paginator {
 		return false;
 	}
 
-	public void lastPage() {
-		setActivePage(pagesNumber);
-	}
-
 	public void firstPage() {
 		setActivePage(1);
+	}
+
+	public void lastPage() {
+		setActivePage(getPagesNumber());
+	}
+
+	public void goToPage(Integer page) {
+		if (page >= 1 && page <= getPagesNumber()) {
+			setActivePage(page);
+		}
 	}
 
 	public void reloadRecords() {
