@@ -11,6 +11,7 @@ public with sharing class Paginator {
 
 	private SObjectType objectType;
 	private Integer maxRecordsNumber;
+	@testVisible
 	public Integer recordsPerPage;
 	private Integer activePage;
 	private Integer pagesNumber;
@@ -101,6 +102,10 @@ public with sharing class Paginator {
 		return fields;
 	}
 
+	public void setFields(String fieldsValue) {
+		fields = ' ' + fieldsValue + ' ';
+	}
+
 	public Boolean nextPage() {
 		if (activePage < getPagesNumber()) {
 			setActivePage(activePage + 1);
@@ -134,6 +139,7 @@ public with sharing class Paginator {
 	public void reloadRecords() {
 		updateRecords();
 		updatePagesNumber();
+		updateRecordsOnPage();
 	}
 
 	public SObject[] getPageData() {
@@ -147,16 +153,36 @@ public with sharing class Paginator {
 	}
 
 	private void updateRecordsOnPage() {
+
 		Integer startIndex = getStartIndexOnPage();
 		Integer endIndex = getEndIndexOnPage();
 
-		String[] ids = new String[] {};
-
-		for (Integer index = startIndex; index <= endIndex; index++) {
-			ids.add(onlyIds[index - 1].Id);
+		if (endIndex <= startIndex) {
+			recordsOnPage = new SObject[] {};
+			return;
 		}
 
-		String query = 'SELECT ' + getFields() + ' FROM ' + getObjectName() + ' LIMIT ' + maxRecordsNumber;
+		String[] ids = new String[] {};
+		String idsString = '';
+
+		String currentId;
+		for (Integer index = startIndex; index <= endIndex; index++) {
+			currentId = onlyIds[index - 1].Id;
+			ids.add(currentId);
+
+			if (index > startIndex) {
+				idsString += ', ';
+			}
+			idsString += '\'' + currentId + '\'';
+		}
+
+
+
+		String query = 
+			'SELECT ' + getFields() 
+			+ ' FROM ' + getObjectName() 
+			+ ' WHERE Id in (' + idsString +')'
+			+ ' LIMIT ' + maxRecordsNumber;
 
 		recordsOnPage = Database.query(query);
 	}
