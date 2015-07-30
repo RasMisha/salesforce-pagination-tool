@@ -4,6 +4,7 @@
 public with sharing class PaginatorSortItem {
 
 	private static String ILLEGAL_SORT_TYPE_MESSAGE = 'Sort Type must have one of two values: PaginatorSortItem.SORT_TYPE_ASC or PaginatorSortItem.SORT_TYPE_DESC';
+	private static String SORT_ITEM_ALREADY_IN_USED = 'Sort item already in used.';
 
 	public static Integer SORT_TYPE_ASC = 0;
 	public static Integer SORT_TYPE_DESC = 1;
@@ -48,7 +49,11 @@ public with sharing class PaginatorSortItem {
 	}
 
 	public void setListener(PaginatorSortItemListener listener) {
-		this.listener = listener;
+		if (listener == null) {
+			this.listener = listener;
+		} else {
+			throw new PaginatorException(SORT_ITEM_ALREADY_IN_USED);
+		}
 	}
 
 	public void removeListener() {
