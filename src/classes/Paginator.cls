@@ -70,6 +70,7 @@ public with sharing class Paginator {
 			oldStartIndex, 
 			newRecordsPerPage
 		);
+		updatePagesNumber();
 	}
 
 	public Integer getAllRecordsNumber() {
