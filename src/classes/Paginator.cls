@@ -184,7 +184,12 @@ public with sharing class Paginator {
 			+ ' WHERE Id in (' + idsString +')'
 			+ ' LIMIT ' + maxRecordsNumber;
 
-		recordsOnPage = Database.query(query);
+		Map<Id, SObject> unsortedRecords = new Map<Id, SObject>(Database.query(query));
+
+		recordsOnPage = new SObject[] {};
+		for (String sortedId : ids) {
+			recordsOnPage.add(unsortedRecords.get(sortedId));
+		}
 	}
 
 	private void updatePagesNumber() {
