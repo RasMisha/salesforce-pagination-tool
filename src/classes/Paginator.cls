@@ -1,5 +1,5 @@
 /**
- * Created by RasMisa on 07/29/2015
+ * Created by RasMisha on 07/29/2015
  */
 public with sharing class Paginator {
 
@@ -20,13 +20,8 @@ public with sharing class Paginator {
 			updateActivePageBasedOnStartRecordOnPage(recordsNumber, startIndexOnPage, value);
 		}
 	}
-	private Integer activePage {
-		get;
-		set {
-			activePage = value;
-			updateStartAndLastIndexOnPage();
-		}
-	}
+
+	private Integer activePage {get; set;}
 	private Integer pagesNumber {get;set;}
 	private Integer startIndexOnPage {get;set;}
 	private Integer lastIndexOnPage {get;set;}
@@ -49,13 +44,18 @@ public with sharing class Paginator {
 		maxRecordsNumber = newMaxRecordsNumber;
 	}
 
+	public void setActivePage(Integer value) {
+		activePage = value;
+		updateStartAndLastIndexOnPage();
+	}
+
 	public Integer getActivePage() {
 		return activePage;
 	}
 
 	public Boolean nextPage() {
 		if (activePage < pagesNumber) {
-			activePage++;
+			setActivePage(activePage + 1);
 			return true;
 		}
 		return false;
@@ -63,18 +63,18 @@ public with sharing class Paginator {
 
 	public Boolean previousPage() {
 		if (activePage > 1) {
-			activePage--;
+			setActivePage(activePage - 1);
 			return true;
 		}
 		return false;
 	}
 
 	public void lastPage() {
-		activePage = pagesNumber;
+		setActivePage(pagesNumber);
 	}
 
 	public void firstPage() {
-		activePage = 1;
+		setActivePage(1);
 	}
 
 	public void reloadRecords() {
