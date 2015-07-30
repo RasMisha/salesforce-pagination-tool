@@ -3,6 +3,8 @@
  */
 public with sharing class Paginator implements PaginatorSortItemListener {
 
+	private static final String RECORDS_PER_PAGE_ERROR_MESSAGE = 'Records per page must be a positive number';
+
 	public static final Integer DEFAULT_MAXIMUM_RECORDS_NUMBER = 10000;
 	public static final Integer DEFAULT_RECORDS_PER_PAGE = 25;
 	public static final Integer DEFAULT_ACTIVE_PAGE = 1;
@@ -61,6 +63,11 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	}
 
 	public void setRecordsPerPage(Integer newRecordsPerPage) {
+
+		if (newRecordsPerPage == null || newRecordsPerPage <= 0) {
+			throw new PaginatorException(RECORDS_PER_PAGE_ERROR_MESSAGE);
+		}
+
 		Integer oldStartIndex = getStartIndexOnPage();
 		recordsPerPage = newRecordsPerPage;
 	
