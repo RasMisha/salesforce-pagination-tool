@@ -3,44 +3,36 @@
  */
 public with sharing class PaginatorSortItem {
 
-	private static String ILLEGAL_SORT_TYPE_MESSAGE = 'Sort Type must have one of two values: PaginatorSortItem.SORT_TYPE_ASC or PaginatorSortItem.SORT_TYPE_DESC';
+	private static String ILLEGAL_SORT_TYPE_MESSAGE = 'Sort type cannot be null.';
 	private static String SORT_ITEM_ALREADY_IN_USED = 'Sort item already in used.';
 
-	public static Integer SORT_TYPE_ASC = 0;
-	public static Integer SORT_TYPE_DESC = 1;
-
 	public String field {get; private set;}
-	public Integer sortType {get; private set;}
+	public PaginatorSortType sortType {get; private set;}
 
 	private PaginatorSortItemListener listener = null;
 
 	public PaginatorSortItem(String field) {
-		this(field, SORT_TYPE_ASC);
+		this(field, PaginatorSortType.ASCENDING);
 	}
 
-	public PaginatorSortItem(String field, Integer sortType) {
-		this.field = field;
-		this.sortType = sortType;
-
-		if (sortType != SORT_TYPE_ASC && sortType != SORT_TYPE_DESC) {
+	public PaginatorSortItem(String field, PaginatorSortType sortType) {
+		if (sortType == null) {
 			throw new PaginatorException(ILLEGAL_SORT_TYPE_MESSAGE);
 		}
+
+		this.field = field;
+		this.sortType = sortType;
 	}
 
 	public override String toString() {
-		return (' ' + field + (sortType == SORT_TYPE_ASC ? ' ASC ' : ' DESC '));
+		return (' ' + field + (sortType == PaginatorSortType.ASCENDING ? ' ASC ' : ' DESC '));
 	}
 
 	public void reverseSortType() {
-		/*
-		* I know about this solution: 
-		* sortType = (sortType + 1) % 2
-		* but please, understand
-		*/
-		if (sortType == SORT_TYPE_ASC) {
-			sortType = SORT_TYPE_DESC;
+		if (sortType == PaginatorSortType.ASCENDING) {
+			sortType = PaginatorSortType.DESCENDING;
 		} else {
-			sortType = SORT_TYPE_ASC;
+			sortType = PaginatorSortType.ASCENDING;
 		}
 
 		if (listener != null) {
