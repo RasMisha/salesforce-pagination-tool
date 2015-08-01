@@ -4,13 +4,23 @@
 public with sharing class PaginatorUtils {
 
 	public static final String COMMA_SEPARATOR = ',';
+	public static final String AND_SEPARATOR = ' AND ';
+
+	public static final String SINGLE_QUOTE = '\'';
+	public static final String LEFT_BRACKET = '(';
+	public static final String RIGHT_BRACKET = ')';
 	
 	public static final Integer DOTS_IN_PAGINATION = -1;
-	
-	public static String join(Object[] objectsArray, String separator, Boolean isString) {
-		String[] updatedArray = new String[] {};
 
-		if ((objectsArray instanceof String[]) && !isString) {
+	public static String join(Object[] objectsArray, String separator) {
+		return join(objectsArray, separator, null, null);
+	}
+	
+	public static String join(Object[] objectsArray, String separator, String itemPrefix, String itemPostfix) {
+		String[] updatedArray = new String[] {};
+		Boolean noItemPrefixAndPostfix = String.isBlank(itemPrefix) && String.isBlank(itemPostfix);
+
+		if ((objectsArray instanceof String[]) && !noItemPrefixAndPostfix) {
 			return String.join(objectsArray, separator);
 		}
 
@@ -21,10 +31,8 @@ public with sharing class PaginatorUtils {
 			} else {
 				stringItem = String.valueOf(item);
 			}
-
-			if (isString) {
-				stringItem = '\'' + stringItem + '\'';
-			}
+			
+			stringItem = itemPrefix + stringItem + itemPostfix;
 
 			updatedArray.add(stringItem);
 		}

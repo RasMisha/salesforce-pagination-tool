@@ -18,7 +18,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	private Integer pagesNumber;
 
 	private String[] fields;
-	private String filterCondition;
+	private String[] filterConditions;
 	private PaginatorSortItem[] sortItems;
 	private Boolean immediatlyReloadOnReverseSortItem;
 
@@ -37,6 +37,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		activePage = DEFAULT_ACTIVE_PAGE;
 		recordsPerPage = DEFAULT_RECORDS_PER_PAGE;
 		sortItems = new PaginatorSortItem[] {};
+		filterConditions = new String[] {};
 		immediatlyReloadOnReverseSortItem = DEFAULT_IMMEDIATLY_RELOAD_ON_REVERSE;
 	}
 
@@ -114,8 +115,23 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		fields = newfields;
 	}
 
-	public void setFilterCondition(String condition) {
-		filterCondition = condition;
+	public void addFilterCondition(String condition) {
+		if (String.isNotBlank(condition)) {
+			filterConditions.add(condition);
+		}
+	}
+
+	public void removeFilterCondition(Integer index) {
+		if (index >= 0 &&  index < filterConditions.size()) {
+			filterConditions.remove(index);
+		}
+	}
+
+	public String getFilterConditionAt(Integer index) {
+		if (index >= 0 &&  index < filterConditions.size()) {
+			return filterConditions[index];
+		}
+		return null;
 	}
 
 	public void addSortItem(PaginatorSortItem sortItem) {
@@ -190,8 +206,24 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		String query = 
 			'SELECT Id ' 
 			+ ' FROM ' + getObjectName() 
-			+ (String.isNotBlank(filterCondition) ? ' WHERE ' + filterCondition : '')
-			+ (sortItems.size() > 0 ? ' ORDER BY ' + PaginatorUtils.join(sortItems, PaginatorUtils.COMMA_SEPARATOR, false) : '')
+			+ (filterConditions.size() > 0 
+				? ' WHERE ' +  PaginatorUtils.join(
+					filterConditions,
+					PaginatorUtils.AND_SEPARATOR,
+					PaginatorUtils.LEFT_BRACKET,
+					PaginatorUtils.RIGHT_BRACKET
+				)
+				: ''
+			)
+			+ (sortItems.size() > 0 
+				? ' ORDER BY ' + PaginatorUtils.join(
+					sortItems, 
+					PaginatorUtils.COMMA_SEPARATOR, 
+					PaginatorUtils.SINGLE_QUOTE, 
+					PaginatorUtils.SINGLE_QUOTE
+				) 
+				: ''
+			)
 			+ ' LIMIT ' + maxRecordsNumber;
 
 		onlyIds = Database.query(query);
@@ -218,13 +250,13 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		String idsString = PaginatorUtils.join(
 			ids, 
 			PaginatorUtils.COMMA_SEPARATOR, 
-			true
+			PaginatorUtils.SINGLE_QUOTE,
+			PaginatorUtils.SINGLE_QUOTE
 		);
 
 		String fieldString = PaginatorUtils.join(
 			getFields(), 
-			PaginatorUtils.COMMA_SEPARATOR, 
-			false
+			PaginatorUtils.COMMA_SEPARATOR
 		);
 
 		String query = 
