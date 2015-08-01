@@ -13,14 +13,14 @@ public with sharing class PaginatorUtils {
 	public static final Integer DOTS_IN_PAGINATION = -1;
 
 	public static String join(Object[] objectsArray, String separator) {
-		return join(objectsArray, separator, null, null);
+		return join(objectsArray, separator, '', '');
 	}
 	
 	public static String join(Object[] objectsArray, String separator, String itemPrefix, String itemPostfix) {
 		String[] updatedArray = new String[] {};
 		Boolean noItemPrefixAndPostfix = String.isBlank(itemPrefix) && String.isBlank(itemPostfix);
 
-		if ((objectsArray instanceof String[]) && !noItemPrefixAndPostfix) {
+		if ((objectsArray instanceof String[]) && noItemPrefixAndPostfix) {
 			return String.join(objectsArray, separator);
 		}
 

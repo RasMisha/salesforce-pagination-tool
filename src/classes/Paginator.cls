@@ -218,13 +218,13 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 			+ (sortItems.size() > 0 
 				? ' ORDER BY ' + PaginatorUtils.join(
 					sortItems, 
-					PaginatorUtils.COMMA_SEPARATOR, 
-					PaginatorUtils.SINGLE_QUOTE, 
-					PaginatorUtils.SINGLE_QUOTE
+					PaginatorUtils.COMMA_SEPARATOR
 				) 
 				: ''
 			)
 			+ ' LIMIT ' + maxRecordsNumber;
+
+		System.debug(LoggingLevel.ERROR, query);
 
 		onlyIds = Database.query(query);
 	}
