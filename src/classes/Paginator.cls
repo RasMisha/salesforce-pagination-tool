@@ -224,8 +224,6 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 			)
 			+ ' LIMIT ' + maxRecordsNumber;
 
-		System.debug(LoggingLevel.ERROR, query);
-
 		onlyIds = Database.query(query);
 	}
 
