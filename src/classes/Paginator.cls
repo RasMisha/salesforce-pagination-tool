@@ -87,6 +87,9 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	}
 
 	public Integer getAllRecordsNumber() {
+		if (onlyIds == null) {
+			return 0;
+		}
 		return onlyIds.size();
 	}
 
@@ -139,9 +142,10 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		return null;
 	}
 
-	public void addSortItem(PaginatorSortItem sortItem) {
+	public Paginator addSortItem(PaginatorSortItem sortItem) {
 		sortItems.add(sortItem);
 		sortItem.setListener(this);
+		return this;
 	}
 
 	public void removeSortItem(Integer index) {
@@ -278,7 +282,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	}
 
 	private void updatePagesNumber() {
-		if (onlyIds.size() == 0) {
+		if (onlyIds == null || onlyIds.size() == 0) {
 			pagesNumber = 1;
 		} else {
 			pagesNumber = ((onlyIds.size() - 1) / recordsPerPage) + 1;
