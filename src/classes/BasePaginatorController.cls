@@ -3,8 +3,24 @@
  */
  public abstract with sharing class BasePaginatorController {
 
+ 	/**
+ 	* Constants for vf-page
+ 	*/
+ 	public Integer DOTS_IN_PAGINATION {
+ 		get {
+ 			return PaginatorUtils.DOTS_IN_PAGINATION;
+ 		}
+ 		private set;
+ 	}
+
+ 	/**
+ 	* Paginator instance
+ 	*/ 
  	protected Paginator currentPaginator = null;
 
+ 	/**
+ 	* Properties
+ 	*/
 	public Player__c[] pageRecords { 
 		get {
 			return (Player__c[])currentPaginator.getPageData();
@@ -49,12 +65,21 @@
 	}
 	public Integer selectedPage {get;set;}
 
+	/**
+	* Constructor
+	*/
 	public BasePaginatorController() {
 		initPaginator();
 	}
 
+	/**
+	* Abstract methods
+	*/
 	protected abstract void initPaginator();
 
+	/**
+	* Common methods
+	*/
 	public void previousPage() {
 		currentPaginator.previousPage();
 	}
