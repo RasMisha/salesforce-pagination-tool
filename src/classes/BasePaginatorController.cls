@@ -3,7 +3,7 @@
  */
  public abstract with sharing class BasePaginatorController {
 
- 	public Paginator currentPaginator = null;
+ 	protected Paginator currentPaginator = null;
 
 	public Player__c[] pageRecords { 
 		get {
@@ -53,7 +53,7 @@
 		initPaginator();
 	}
 
-	public abstract void initPaginator();
+	protected abstract void initPaginator();
 
 	public void previousPage() {
 		currentPaginator.previousPage();

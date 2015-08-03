@@ -21,7 +21,7 @@ public with sharing class ExamplePaginatorController extends BasePaginatorContro
 		super();
 	}
 
-	public override void initPaginator() {
+	protected override void initPaginator() {
 		currentPaginator = new Paginator(Player__c.SObjectType)
 			.setFields(FIELDS)
 			.setRecordsPerPage(RECORDS_PER_PAGE)
