@@ -1,0 +1,20 @@
+<apex:page showHeader="true" sidebar="true" controller="ExamplePaginatorController">
+	<apex:pageMessages />
+	<apex:form>
+		<apex:pageBlock title="Players">
+			<apex:pageBlockTable value="{!pageRecords}" var="record">
+				<apex:column value="{!record.First_Name__c}" />
+				<apex:column value="{!record.Last_Name__c}" />
+				<apex:column value="{!record.Height__c}" />
+				<apex:column value="{!record.Team__r.Name}" />
+				<apex:column value="{!record.Team__r.Foundation_Date__c}" />
+				<apex:column value="{!record.Team__r.Active__c}" />
+			</apex:pageBlockTable>
+			<apex:outputPanel layout="block">
+				<apex:outputPanel layout="block">
+					{!startIndex} .. {!endIndex} of {!numberOfRecords}
+				</apex:outputPanel>
+			</apex:outputPanel>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>
