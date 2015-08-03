@@ -49,8 +49,9 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		}
 	}
 
-	public void setMaximumRecordsNumber(Integer newMaxRecordsNumber) {
+	public Paginator setMaximumRecordsNumber(Integer newMaxRecordsNumber) {
 		maxRecordsNumber = newMaxRecordsNumber;
+		return this;
 	}
 
 	public Integer getActivePage() {
@@ -66,7 +67,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		return recordsPerPage;
 	}
 
-	public void setRecordsPerPage(Integer newRecordsPerPage) {
+	public Paginator setRecordsPerPage(Integer newRecordsPerPage) {
 
 		if (newRecordsPerPage == null || newRecordsPerPage <= 0) {
 			throw new PaginatorException(RECORDS_PER_PAGE_ERROR_MESSAGE);
@@ -81,6 +82,8 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 			newRecordsPerPage
 		);
 		updatePagesNumber();
+
+		return this;
 	}
 
 	public Integer getAllRecordsNumber() {
@@ -111,14 +114,16 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		return fields;
 	}
 
-	public void setFields(String[] newfields) {
+	public Paginator setFields(String[] newfields) {
 		fields = newfields;
+		return this;
 	}
 
-	public void addFilterCondition(String condition) {
+	public Paginator addFilterCondition(String condition) {
 		if (String.isNotBlank(condition)) {
 			filterConditions.add(condition);
 		}
+		return this;
 	}
 
 	public void removeFilterCondition(Integer index) {
@@ -151,8 +156,9 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		return sortItems.size();
 	}
 
-	public void setImmediatlyReloadOnReverseOneOfTheSortItem(Boolean immediatly) {
+	public Paginator setImmediatlyReloadOnReverseOneOfTheSortItem(Boolean immediatly) {
 		immediatlyReloadOnReverseSortItem = immediatly;
+		return this;
 	}
 
 	public PaginatorSortItem getSortItemAt(Integer index) {
