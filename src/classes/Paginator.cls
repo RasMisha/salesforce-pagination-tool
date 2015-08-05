@@ -8,7 +8,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	public static final Integer DEFAULT_MAXIMUM_RECORDS_NUMBER = 10000;
 	public static final Integer DEFAULT_RECORDS_PER_PAGE = 25;
 	public static final Integer DEFAULT_ACTIVE_PAGE = 1;
-	public static final Boolean DEFAULT_IMMEDIATLY_RELOAD_ON_REVERSE = true;
+	public static final Boolean DEFAULT_IMMEDIATLY_RELOAD = true;
 
 	private SObjectType objectType;
 	private Integer maxRecordsNumber;
@@ -20,7 +20,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	private String[] fields;
 	private String[] filterConditions;
 	private PaginatorSortItem[] sortItems;
-	private Boolean immediatlyReloadOnReverseSortItem;
+	private Boolean immediatlyReload;
 
 	@testVisible
 	private SObject[] onlyIds;
@@ -38,7 +38,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 		recordsPerPage = DEFAULT_RECORDS_PER_PAGE;
 		sortItems = new PaginatorSortItem[] {};
 		filterConditions = new String[] {};
-		immediatlyReloadOnReverseSortItem = DEFAULT_IMMEDIATLY_RELOAD_ON_REVERSE;
+		immediatlyReload = DEFAULT_IMMEDIATLY_RELOAD;
 	}
 
 	private void initFields() {
@@ -161,7 +161,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	}
 
 	public Paginator setImmediatlyReloadOnReverseOneOfTheSortItem(Boolean immediatly) {
-		immediatlyReloadOnReverseSortItem = immediatly;
+		immediatlyReload = immediatly;
 		return this;
 	}
 
@@ -303,7 +303,7 @@ public with sharing class Paginator implements PaginatorSortItemListener {
 	}
 
 	public void sortDirectionWasChanged() {
-		if (immediatlyReloadOnReverseSortItem) {
+		if (immediatlyReload) {
 			reloadRecords();
 		}
 	}
